@@ -46,12 +46,12 @@ while running:
 
 
     # Drawing
-    screen.fill((128, 128, 128))
+    screen.fill((200, 200, 200))
 
     # Draw circles
     for circle in circles:
         x, y, r = circle
-        pg.draw.circle(screen, (50, 50, 50), (x, y), r)
+        pg.draw.circle(screen, (250, 250, 250), (x, y), r, 3)
         pg.draw.circle(screen, (100, 100, 100), (x, y), r/2)
 
     # Draw a line between the two circles
