@@ -10,7 +10,7 @@ circles = []
 for i in range(3):
     x = 50+i * 100
     y = 50+i * 100
-    r = 25
+    r = 20
     circles.append((x, y, r))
 
 ## Game Loop ##
@@ -52,11 +52,13 @@ while running:
     for circle in circles:
         x, y, r = circle
         pg.draw.circle(screen, (50, 50, 50), (x, y), r)
+        pg.draw.circle(screen, (100, 100, 100), (x, y), r/2)
 
     # Draw a line between the two circles
     if len(circles) >= 2:
         x1, y1, _ = circles[0]  # Center of the first circle
         x2, y2, _ = circles[1]  # Center of the second circle
-        pg.draw.line(screen, (100, 100, 100), (x1, y1), (x2, y2), 2)  # Line with thickness 2
+        pg.draw.line(screen, (100, 100, 100), (x1, y1), (x2, y2), 18)
 
     pg.display.flip()
+
