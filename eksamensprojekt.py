@@ -1,9 +1,13 @@
 import pygame as pg
 import random
+import math
 
 pg.init()
 
 screen = pg.display.set_mode((0, 0), pg.FULLSCREEN)
+
+
+desired_distance = 150
 
 active_circles = None
 circles = []
@@ -41,7 +45,21 @@ while running:
             if active_circles != None:
                 x, y, r = circles[active_circles]
                 circles[active_circles] = (x + event.rel[0], y + event.rel[1], r)
-                        
+
+                # If the first circle is moved, adjust the second circle
+                #if active_circles == 0 and len(circles) > 1:
+                #    x1, y1, r1 = circles[0]
+                #    x2, y2, r2 = circles[1]
+
+                    # Calculate the angle between the two circles
+                #    angle = math.atan2(y2 - y1, x2 - x1)
+
+                    # Update the second circle's position to maintain the desired distance
+                #    x2 = x1 + math.cos(angle) * desired_distance
+                #    y2 = y1 + math.sin(angle) * desired_distance
+                #    circles[1] = (x2, y2, r2)
+
+                    
 
 
 
