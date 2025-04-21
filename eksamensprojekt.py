@@ -6,6 +6,8 @@ pg.init()
 
 screen = pg.display.set_mode((0, 0), pg.FULLSCREEN)
 
+screen_width, screen_height = pg.display.get_window_size()
+
 ## Timer ##
 clock = pg.time.Clock()
 font = pg.font.Font(None, 100)
@@ -13,13 +15,24 @@ counter = 10
 text = font.render(str(counter), True, (0, 0, 0))
 
 
-desired_distance = 150
 
+
+## Circles ##
+line_distance = 150
 active_circles = None
 circles = []
+starting_coords = [
+    ((screen_width/2), (screen_height/2)+line_distance), #0
+    ((screen_width/2-106.07), (screen_height/2)+line_distance+106.07), #1
+    ((screen_width/2+106.07), (screen_height/2)+line_distance+106.07), #2
+    ((screen_width/2), (screen_height/2)), #3
+    ((screen_width/2)-line_distance, (screen_height/2)), #4
+    ((screen_width/2)+line_distance, (screen_height/2)), #5
+    ((screen_width/2), (screen_height/2)-line_distance), #6
+]
+
 for i in range(7):
-    x = 50+i * 100
-    y = 50+i * 100
+    x, y = starting_coords[i]
     r = 20
     circles.append((x, y, r))
 
@@ -61,8 +74,8 @@ while running:
                 #    angle = math.atan2(y2 - y1, x2 - x1)
 
                     # Update the second circle's position to maintain the desired distance
-                #    x2 = x1 + math.cos(angle) * desired_distance
-                #    y2 = y1 + math.sin(angle) * desired_distance
+                #    x2 = x1 + math.cos(angle) * line_distance
+                #    y2 = y1 + math.sin(angle) * line_distance
                 #    circles[1] = (x2, y2, r2)
 
                     
@@ -84,12 +97,12 @@ while running:
             if len(circles) >= 2:
                 x1, y1, _ = circles[0]
                 x2, y2, _ = circles[1+i]  
-                pg.draw.line(screen, (100, 100, 100), (x1, y1), (x2, y2), 15)
+                pg.draw.line(screen, (100, 100, 100), (x1, y1), (x2, y2), 17)
         else:
             if len(circles) >= 2:
                 x1, y1, _ = circles[3]
                 x2, y2, _ = circles[1+i]
-                pg.draw.line(screen, (100, 100, 100), (x1, y1), (x2, y2), 15)
+                pg.draw.line(screen, (100, 100, 100), (x1, y1), (x2, y2), 17)
 
     pg.display.flip()
 
