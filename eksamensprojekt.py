@@ -6,12 +6,18 @@ pg.init()
 
 screen = pg.display.set_mode((0, 0), pg.FULLSCREEN)
 
+## Timer ##
+clock = pg.time.Clock()
+font = pg.font.Font(None, 100)
+counter = 10
+text = font.render(str(counter), True, (0, 0, 0))
+
 
 desired_distance = 150
 
 active_circles = None
 circles = []
-for i in range(3):
+for i in range(7):
     x = 50+i * 100
     y = 50+i * 100
     r = 20
@@ -72,11 +78,18 @@ while running:
         pg.draw.circle(screen, (250, 250, 250), (x, y), r, 3)
         pg.draw.circle(screen, (100, 100, 100), (x, y), r/2)
 
-    # Draw a line between the two circles
-    if len(circles) >= 2:
-        x1, y1, _ = circles[0]  # Center of the first circle
-        x2, y2, _ = circles[1]  # Center of the second circle
-        pg.draw.line(screen, (100, 100, 100), (x1, y1), (x2, y2), 18)
+    
+    for i in range(6):
+        if i < 3:
+            if len(circles) >= 2:
+                x1, y1, _ = circles[0]
+                x2, y2, _ = circles[1+i]  
+                pg.draw.line(screen, (100, 100, 100), (x1, y1), (x2, y2), 15)
+        else:
+            if len(circles) >= 2:
+                x1, y1, _ = circles[3]
+                x2, y2, _ = circles[1+i]
+                pg.draw.line(screen, (100, 100, 100), (x1, y1), (x2, y2), 15)
 
     pg.display.flip()
 
