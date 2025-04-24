@@ -79,7 +79,7 @@ while running:
                         # when #3 moved by #0
                         if i == 3:
                             for i in range(4,7):
-                                x1, y1, r1 = circles[0]
+                                x1, y1, r1 = circles[3]
                                 x2, y2, r2 = circles[i]
 
                                 # angle between the two circles
@@ -128,16 +128,238 @@ while running:
                                         x2 = x1 + math.cos(angle) * line_distance
                                         y2 = y1 + math.sin(angle) * line_distance
                                         circles[i] = (x2, y2, r2)
-                                
+                if active_circles == 1:
+                    for i in range(0,1):
+                        x1, y1, r1 = circles[1]
+                        x2, y2, r2 = circles[i]
+
+                        # angle between the two circles
+                        angle = math.atan2(y2 - y1, x2 - x1)
+
+                        # move second circle
+                        x2 = x1 + math.cos(angle) * line_distance
+                        y2 = y1 + math.sin(angle) * line_distance
+                        circles[i] = (x2, y2, r2)
+                        
+                        for i in range(1,4):
+                            x1, y1, r1 = circles[0]
+                            x2, y2, r2 = circles[i]
+
+                            # angle between the two circles
+                            angle = math.atan2(y2 - y1, x2 - x1)
+
+                            # move second circle
+                            x2 = x1 + math.cos(angle) * line_distance
+                            y2 = y1 + math.sin(angle) * line_distance
+                            circles[i] = (x2, y2, r2)
+                            for i in range(4,8):
+                                if i != 7:
+                                    x1, y1, r1 = circles[3]
+                                    x2, y2, r2 = circles[i]
+
+                                    # angle between the two circles
+                                    angle = math.atan2(y2 - y1, x2 - x1)
+
+                                    # move second circle
+                                    x2 = x1 + math.cos(angle) * line_distance
+                                    y2 = y1 + math.sin(angle) * line_distance
+                                    circles[i] = (x2, y2, r2)
+                if active_circles == 2:
+                    for i in range(0,1):
+                        x1, y1, r1 = circles[2]
+                        x2, y2, r2 = circles[i]
+
+                        # angle between the two circles
+                        angle = math.atan2(y2 - y1, x2 - x1)
+
+                        # move second circle
+                        x2 = x1 + math.cos(angle) * line_distance
+                        y2 = y1 + math.sin(angle) * line_distance
+                        circles[i] = (x2, y2, r2)
+                        
+                        for i in range(1,4):
+                            x1, y1, r1 = circles[0]
+                            x2, y2, r2 = circles[i]
+
+                            # angle between the two circles
+                            angle = math.atan2(y2 - y1, x2 - x1)
+
+                            # move second circle
+                            x2 = x1 + math.cos(angle) * line_distance
+                            y2 = y1 + math.sin(angle) * line_distance
+                            circles[i] = (x2, y2, r2)
+                            for i in range(4,8):
+                                if i != 7:
+                                    x1, y1, r1 = circles[3]
+                                    x2, y2, r2 = circles[i]
+
+                                    # angle between the two circles
+                                    angle = math.atan2(y2 - y1, x2 - x1)
+
+                                    # move second circle
+                                    x2 = x1 + math.cos(angle) * line_distance
+                                    y2 = y1 + math.sin(angle) * line_distance
+                                    circles[i] = (x2, y2, r2)
+                if active_circles == 4:
+                    for i in range(3,4):
+                        x1, y1, r1 = circles[4]
+                        x2, y2, r2 = circles[i]
+
+                        # angle between the two circles
+                        angle = math.atan2(y2 - y1, x2 - x1)
+
+                        # move second circle
+                        x2 = x1 + math.cos(angle) * line_distance
+                        y2 = y1 + math.sin(angle) * line_distance
+                        circles[i] = (x2, y2, r2)
+                        for i in range(4,8):
+                            if i not in (3,7):
+                                x1, y1, r1 = circles[3]
+                                x2, y2, r2 = circles[i]
+
+                                # angle between the two circles
+                                angle = math.atan2(y2 - y1, x2 - x1)
+
+                                # move second circle
+                                x2 = x1 + math.cos(angle) * line_distance
+                                y2 = y1 + math.sin(angle) * line_distance
+                                circles[i] = (x2, y2, r2)
+
+                            else:
+                                for i in range(0,1):
+                                    x1, y1, r1 = circles[3]
+                                    x2, y2, r2 = circles[i]
+
+                                    # angle between the two circles
+                                    angle = math.atan2(y2 - y1, x2 - x1)
+
+                                    # move second circle
+                                    x2 = x1 + math.cos(angle) * line_distance
+                                    y2 = y1 + math.sin(angle) * line_distance
+                                    circles[i] = (x2, y2, r2)
+                                    if i == 0:
+                                        for i in range(1,4):
+                                            x1, y1, r1 = circles[0]
+                                            x2, y2, r2 = circles[i]
+
+                                            # angle between the two circles
+                                            angle = math.atan2(y2 - y1, x2 - x1)
+
+                                            # move second circle
+                                            x2 = x1 + math.cos(angle) * line_distance
+                                            y2 = y1 + math.sin(angle) * line_distance
+                                            circles[i] = (x2, y2, r2)
+                if active_circles == 5:
+                    for i in range(3,4):
+                        x1, y1, r1 = circles[5]
+                        x2, y2, r2 = circles[i]
+
+                        # angle between the two circles
+                        angle = math.atan2(y2 - y1, x2 - x1)
+
+                        # move second circle
+                        x2 = x1 + math.cos(angle) * line_distance
+                        y2 = y1 + math.sin(angle) * line_distance
+                        circles[i] = (x2, y2, r2)
+                        for i in range(4,8):
+                            if i not in (3,7):
+                                x1, y1, r1 = circles[3]
+                                x2, y2, r2 = circles[i]
+
+                                # angle between the two circles
+                                angle = math.atan2(y2 - y1, x2 - x1)
+
+                                # move second circle
+                                x2 = x1 + math.cos(angle) * line_distance
+                                y2 = y1 + math.sin(angle) * line_distance
+                                circles[i] = (x2, y2, r2)
+
+                            else:
+                                for i in range(0,1):
+                                    x1, y1, r1 = circles[3]
+                                    x2, y2, r2 = circles[i]
+
+                                    # angle between the two circles
+                                    angle = math.atan2(y2 - y1, x2 - x1)
+
+                                    # move second circle
+                                    x2 = x1 + math.cos(angle) * line_distance
+                                    y2 = y1 + math.sin(angle) * line_distance
+                                    circles[i] = (x2, y2, r2)
+                                    if i == 0:
+                                        for i in range(1,4):
+                                            x1, y1, r1 = circles[0]
+                                            x2, y2, r2 = circles[i]
+
+                                            # angle between the two circles
+                                            angle = math.atan2(y2 - y1, x2 - x1)
+
+                                            # move second circle
+                                            x2 = x1 + math.cos(angle) * line_distance
+                                            y2 = y1 + math.sin(angle) * line_distance
+                                            circles[i] = (x2, y2, r2)
+                if active_circles == 6:
+                    for i in range(3,4):
+                        x1, y1, r1 = circles[6]
+                        x2, y2, r2 = circles[i]
+
+                        # angle between the two circles
+                        angle = math.atan2(y2 - y1, x2 - x1)
+
+                        # move second circle
+                        x2 = x1 + math.cos(angle) * line_distance
+                        y2 = y1 + math.sin(angle) * line_distance
+                        circles[i] = (x2, y2, r2)
+                        for i in range(4,8):
+                            if i not in (3,7):
+                                x1, y1, r1 = circles[3]
+                                x2, y2, r2 = circles[i]
+
+                                # angle between the two circles
+                                angle = math.atan2(y2 - y1, x2 - x1)
+
+                                # move second circle
+                                x2 = x1 + math.cos(angle) * line_distance
+                                y2 = y1 + math.sin(angle) * line_distance
+                                circles[i] = (x2, y2, r2)
+
+                            else:
+                                for i in range(0,1):
+                                    x1, y1, r1 = circles[3]
+                                    x2, y2, r2 = circles[i]
+
+                                    # angle between the two circles
+                                    angle = math.atan2(y2 - y1, x2 - x1)
+
+                                    # move second circle
+                                    x2 = x1 + math.cos(angle) * line_distance
+                                    y2 = y1 + math.sin(angle) * line_distance
+                                    circles[i] = (x2, y2, r2)
+                                    if i == 0:
+                                        for i in range(1,4):
+                                            x1, y1, r1 = circles[0]
+                                            x2, y2, r2 = circles[i]
+
+                                            # angle between the two circles
+                                            angle = math.atan2(y2 - y1, x2 - x1)
+
+                                            # move second circle
+                                            x2 = x1 + math.cos(angle) * line_distance
+                                            y2 = y1 + math.sin(angle) * line_distance
+                                            circles[i] = (x2, y2, r2)
+
+                    
 
     ## Drawing
     screen.fill((200, 200, 200))
 
     # Draw circles
-    for circle in circles:
+    for i, circle in enumerate(circles):
         x, y, r = circle
+        if i == 6:
+            r = 40
         pg.draw.circle(screen, (250, 250, 250), (x, y), r, 3)
-        pg.draw.circle(screen, (100, 100, 100), (x, y), r/2)
+        pg.draw.circle(screen, (100, 100, 100), (x, y), r-10)
 
     # Draw lines between circles
     for i in range(6):
