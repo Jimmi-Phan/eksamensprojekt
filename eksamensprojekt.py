@@ -7,6 +7,8 @@ pg.init()
 screen = pg.display.set_mode((0, 0), pg.FULLSCREEN)
 
 screen_width, screen_height = pg.display.get_window_size()
+line_distance = 150
+
 
 ## Timer ##
 clock = pg.time.Clock()
@@ -15,7 +17,6 @@ counter = 10
 text = font.render(str(counter), True, (0, 0, 0))
 
 ## Circles ##
-line_distance = 150
 active_circle = None
 circles = []
 starting_coords = [
@@ -25,7 +26,11 @@ starting_coords = [
     ((screen_width/2), (screen_height/2)), #3
     ((screen_width/2)-line_distance, (screen_height/2)), #4
     ((screen_width/2)+line_distance, (screen_height/2)), #5
-    ((screen_width/2), (screen_height/2)-line_distance), #6
+    ((screen_width/2), (screen_height/2)-50), #6
+    #((screen_width/2), (screen_height/2)-line_distance), #7
+    #((screen_width/2), (screen_height/2)-line_distance), #8
+    #((screen_width/2), (screen_height/2)-line_distance), #9
+    #((screen_width/2), (screen_height/2)-line_distance) #10
 ]
 
 for i in range(7):
@@ -35,12 +40,14 @@ for i in range(7):
 
 ## Functions ##
 def no_elongate(circle_number, i):
+    if (circle_number == 3 and i == 6) or (circle_number == 6 and i == 3):
+        line_distance = 50
+    else:
+        line_distance = 150
     x1, y1, r1 = circles[circle_number]
     x2, y2, r2 = circles[i]
-
     # angle between the two circles
     angle = math.atan2(y2 - y1, x2 - x1)
-
     # move second circle
     x2 = x1 + math.cos(angle) * line_distance
     y2 = y1 + math.sin(angle) * line_distance
@@ -66,10 +73,10 @@ while running:
                     x, y, r = circle
                     if (event.pos[0] - x) ** 2 + (event.pos[1] - y) ** 2 <= r ** 2:
                         active_circle = num
-
         if event.type == pg.MOUSEBUTTONUP:
             if event.button == 1:
                 active_circle = None
+
         # mouse movement check
         if event.type == pg.MOUSEMOTION:
             if active_circle != None:
@@ -164,7 +171,7 @@ while running:
         if i < 3:
             if len(circles) >= 2:
                 x1, y1, _ = circles[0]
-                x2, y2, _ = circles[1+i]  
+                x2, y2, _ = circles[1+i]
                 pg.draw.line(screen, (100, 100, 100), (x1, y1), (x2, y2), 17)
         else:
             if len(circles) >= 2:
