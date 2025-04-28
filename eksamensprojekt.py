@@ -11,12 +11,32 @@ line_distance = 150
 
 in_game = False
 
+## Varibales ##
+# startbutton
+startbutton_x = screen_width*0.0175
+startbutton_y = screen_height*0.1
+startbutton_width = screen_width*(0.2-0.0175)-startbutton_x
+startbutton_height = screen_height*0.3-startbutton_y
+
+# nextbutton
+nextbutton_x = screen_width*0.0175
+nextbutton_y = screen_height*0.4
+nextbutton_width = screen_width*(0.2-0.0175)-nextbutton_x
+nextbutton_height = screen_height*0.6-nextbutton_y
+
+# optionsbutton
+optionsbutton_x = screen_width*0.0175
+optionsbutton_y = screen_height*0.7
+optionsbutton_width = screen_width*(0.2-0.0175)-optionsbutton_x
+optionsbutton_height = screen_height*0.9-optionsbutton_y
+
 ## Timer ##
 clock = pg.time.Clock()
-counter = 10
+counter = 9
 text = str(counter)
 pg.time.set_timer(pg.USEREVENT, 1000)
-font = pg.font.Font(None, 50)
+a = 75
+font = pg.font.Font(None, a)
 
 ## Circles ##
 active_circle = None
@@ -76,7 +96,14 @@ while running:
                     text = str(counter)
                 else:
                     text = 'Life lost!'
-            
+        if event.type == pg.KEYDOWN:
+            if event.key == pg.K_r:
+                print("hey")
+                for i in range(0,7):
+                    x, y = starting_coords[i]
+                    r = 20
+                    circles[i] = (x, y, r)  
+
 
         ## NO ELONGATED LINES ##
         # mouse leftclick check
@@ -193,19 +220,19 @@ while running:
     x3, y3, r3 = circles[6]
     angle = math.atan2(y2 - y1, x2 - x1) + 1.5707963267948966
     angle2 = math.atan2(y3 - y2, x3 - x2) + 1.5707963267948966
-    if (abs(angle-angle2)) > 0.75:
-        if angle > angle2:
-            overlap = 0.6
-            x3 += math.cos(angle2) * overlap
-            y3 += math.sin(angle2) * overlap
+    # if (abs(angle-angle2)) > 0.75: ctrl + '
+    #     if angle > angle2:
+    #         overlap = 0.6
+    #         x3 += math.cos(angle2) * overlap
+    #         y3 += math.sin(angle2) * overlap
             
-            circles[6] = (x3, y3, r3)
-        else:
-            overlap = 0.6
-            x3 -= math.cos(angle) * overlap
-            y3 -= math.sin(angle) * overlap
+    #         circles[6] = (x3, y3, r3)
+    #     else:
+    #         overlap = 0.6
+    #         x3 -= math.cos(angle) * overlap
+    #         y3 -= math.sin(angle) * overlap
             
-            circles[6] = (x3, y3, r3)
+    #         circles[6] = (x3, y3, r3)
 
 
 
@@ -233,9 +260,29 @@ while running:
                 x2, y2, _ = circles[1+i]
                 pg.draw.line(screen, (100, 100, 100), (x1, y1), (x2, y2), 17)
     
-    screen.blit(font.render(text, True, (0, 0, 0)), (32, 48))
 
-    
+    pg.draw.rect(screen,(100, 100, 100),pg.Rect(0,0,(screen_width*0.2),(screen_height)))
+    pg.draw.rect(screen,(100, 100, 100),pg.Rect((screen_width*0.8),0,(screen_width),(screen_height)))
 
+
+    text_surface = font.render(text, True, (0, 0, 0))
+    text_rect = text_surface.get_rect(center=((screen_width*0.9), (screen_height*0.2)))
+    screen.blit(text_surface, text_rect)
+
+    text_surface = font.render("test", True, (0, 0, 0))
+    text_rect = text_surface.get_rect(center=((screen_width*0.9), (screen_height*0.5)))
+    screen.blit(text_surface, text_rect)
+
+    pg.draw.rect(screen,(50,50,50),pg.Rect(startbutton_x, startbutton_y,startbutton_width,startbutton_height))
+    text_surface = font.render("Start", True, (0, 0, 0))
+    text_rect = text_surface.get_rect(center=(startbutton_x+startbutton_width/2, startbutton_y+startbutton_height/2))
+    screen.blit(text_surface, text_rect)
+    pg.draw.rect(screen,(50,50,50),pg.Rect(nextbutton_x, nextbutton_y,nextbutton_width,nextbutton_height))
+    text_surface = font.render("Next", True, (0, 0, 0))
+    text_rect = text_surface.get_rect(center=(nextbutton_x+nextbutton_width/2, nextbutton_y+nextbutton_height/2))
+    screen.blit(text_surface, text_rect)
+    pg.draw.rect(screen,(50,50,50),pg.Rect(optionsbutton_x, optionsbutton_y,optionsbutton_width,optionsbutton_height))
+    text_surface = font.render("Options", True, (0, 0, 0))
+    text_rect = text_surface.get_rect(center=(optionsbutton_x+optionsbutton_width/2, optionsbutton_y+optionsbutton_height/2))
+    screen.blit(text_surface, text_rect)
     pg.display.flip()
-
