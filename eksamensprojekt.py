@@ -26,7 +26,7 @@ starting_coords = [
     ((screen_width/2), (screen_height/2)), #3
     ((screen_width/2)-line_distance, (screen_height/2)), #4
     ((screen_width/2)+line_distance, (screen_height/2)), #5
-    ((screen_width/2), (screen_height/2)-50), #6
+    ((screen_width/2), (screen_height/2)-(line_distance/3)), #6
     #((screen_width/2), (screen_height/2)-line_distance), #7
     #((screen_width/2), (screen_height/2)-line_distance), #8
     #((screen_width/2), (screen_height/2)-line_distance), #9
@@ -41,16 +41,16 @@ for i in range(7):
 ## Functions ##
 def no_elongate(circle_number, i):
     if (circle_number == 3 and i == 6) or (circle_number == 6 and i == 3):
-        line_distance = 50
+        distance1 = line_distance/3
     else:
-        line_distance = 150
+        distance1 = line_distance
     x1, y1, r1 = circles[circle_number]
     x2, y2, r2 = circles[i]
     # angle between the two circles
     angle = math.atan2(y2 - y1, x2 - x1)
     # move second circle
-    x2 = x1 + math.cos(angle) * line_distance
-    y2 = y1 + math.sin(angle) * line_distance
+    x2 = x1 + math.cos(angle) * distance1
+    y2 = y1 + math.sin(angle) * distance1
     circles[i] = (x2, y2, r2)
 
 ## Game Loop ##
@@ -80,7 +80,7 @@ while running:
         # mouse movement check
         if event.type == pg.MOUSEMOTION:
             if active_circle != None:
-                # chain reation movement
+                ## chain reation movement
                 x, y, r = circles[active_circle]
                 circles[active_circle] = (x + event.rel[0], y + event.rel[1], r)
                 # If #0 circle is moved
@@ -153,6 +153,48 @@ while running:
                                     no_elongate(3, i)
                                     for i in range(1,4):
                                         no_elongate(0, i)
+    
+    ## Collision prevention
+    temp_range1, temp_range2, temp_range3 = (0, 7,1)
+    if active_circle in (2,5):
+        temp_range1, temp_range2, temp_range3 = (6, -1, -1)
+    for i in range(temp_range1, temp_range2, temp_range3):
+        for j in range(temp_range1, temp_range2, temp_range3):
+            if i != j:
+                x1, y1, r1 = circles[i]
+                x2, y2, r2 = circles[j]
+                distance2 = math.sqrt((x2 - x1)**2 + (y2 - y1)**2)
+                if distance2 < r1 + r2:
+                    overlap = r1 + r2 - distance2
+                    angle = math.atan2(y2 - y1, x2 - x1)
+                    
+                    x2 += math.cos(angle) * overlap
+                    y2 += math.sin(angle) * overlap
+
+                    circles[i] = (x1, y1, r1)
+                    circles[j] = (x2, y2, r2)
+
+    # Collision for #6 circle
+    x1, y1, r1 = circles[0]
+    x2, y2, r2 = circles[3]
+    x3, y3, r3 = circles[6]
+    angle = math.atan2(y2 - y1, x2 - x1) + 1.5707963267948966
+    angle2 = math.atan2(y3 - y2, x3 - x2) + 1.5707963267948966
+    print(angle, angle2)
+    if (abs(angle-angle2)) > 0.75:
+        if angle > angle2:
+            overlap = 0.6
+            x3 += math.cos(angle2) * overlap
+            y3 += math.sin(angle2) * overlap
+            
+            circles[6] = (x3, y3, r3)
+        else:
+            overlap = 0.6
+            x3 -= math.cos(angle) * overlap
+            y3 -= math.sin(angle) * overlap
+            
+            circles[6] = (x3, y3, r3)
+
 
 
     ## Drawing
