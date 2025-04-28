@@ -9,12 +9,14 @@ screen = pg.display.set_mode((0, 0), pg.FULLSCREEN)
 screen_width, screen_height = pg.display.get_window_size()
 line_distance = 150
 
+in_game = False
 
 ## Timer ##
 clock = pg.time.Clock()
-font = pg.font.Font(None, 100)
 counter = 10
-text = font.render(str(counter), True, (0, 0, 0))
+text = str(counter)
+pg.time.set_timer(pg.USEREVENT, 1000)
+font = pg.font.Font(None, 50)
 
 ## Circles ##
 active_circle = None
@@ -64,7 +66,18 @@ while running:
         if event.type == pg.KEYDOWN:
             if event.key == pg.K_ESCAPE:
                 running = False
-        
+        ## Timer ##
+        if event.type == pg.USEREVENT:
+            if in_game == True:
+                print(counter)
+                counter -= 1
+                
+                if counter > 0:
+                    text = str(counter)
+                else:
+                    text = 'Life lost!'
+            
+
         ## NO ELONGATED LINES ##
         # mouse leftclick check
         if event.type == pg.MOUSEBUTTONDOWN:
@@ -180,7 +193,6 @@ while running:
     x3, y3, r3 = circles[6]
     angle = math.atan2(y2 - y1, x2 - x1) + 1.5707963267948966
     angle2 = math.atan2(y3 - y2, x3 - x2) + 1.5707963267948966
-    print(angle, angle2)
     if (abs(angle-angle2)) > 0.75:
         if angle > angle2:
             overlap = 0.6
@@ -220,6 +232,10 @@ while running:
                 x1, y1, _ = circles[3]
                 x2, y2, _ = circles[1+i]
                 pg.draw.line(screen, (100, 100, 100), (x1, y1), (x2, y2), 17)
+    
+    screen.blit(font.render(text, True, (0, 0, 0)), (32, 48))
+
+    
 
     pg.display.flip()
 
