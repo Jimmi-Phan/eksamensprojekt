@@ -9,6 +9,12 @@ screen = pg.display.set_mode((0, 0), pg.FULLSCREEN)
 screen_width, screen_height = pg.display.get_window_size()
 line_distance = 150
 
+round = 0
+
+lives = 3
+
+hole_size = 50
+
 in_game = False
 
 ## Varibales ##
@@ -54,11 +60,29 @@ starting_coords = [
     #((screen_width/2), (screen_height/2)-line_distance), #9
     #((screen_width/2), (screen_height/2)-line_distance) #10
 ]
+hole = []
+wall1 = [
+    ((screen_width/2), (screen_height/2)+line_distance), #0
+    ((screen_width/2-106.07), (screen_height/2)+line_distance+106.07), #1
+    ((screen_width/2+106.07), (screen_height/2)+line_distance+106.07), #2
+    ((screen_width/2), (screen_height/2)), #3
+    ((screen_width/2)-line_distance, (screen_height/2)), #4
+    ((screen_width/2)+line_distance, (screen_height/2)), #5
+    ((screen_width/2), (screen_height/2)-(line_distance/3)), #6
+    #((screen_width/2), (screen_height/2)-line_distance), #7
+    #((screen_width/2), (screen_height/2)-line_distance), #8
+    #((screen_width/2), (screen_height/2)-line_distance), #9
+    #((screen_width/2), (screen_height/2)-line_distance) #10
+]
 
-for i in range(7):
-    x, y = starting_coords[i]
+for i in range(7): # number o balls
+    x1, y2,  = starting_coords[i]
     r = 20
-    circles.append((x, y, r))
+    circles.append((x1, y2, r))
+
+    x2, y2 = wall1[i]
+    r = 20
+    hole.append((x2, y2, r))
 
 ## Functions ##
 def no_elongate(circle_number, i):
@@ -75,6 +99,18 @@ def no_elongate(circle_number, i):
     y2 = y1 + math.sin(angle) * distance1
     circles[i] = (x2, y2, r2)
 
+def fit_check(round):
+    win_check = 0
+    for i in range(7):
+        x1, y1, r = circles[i]
+        x2, y2 = wall1[i]
+        distance = math.sqrt((x2 - x1)**2 + (y2 - y1)**2)
+
+        if distance + r > hole_size: # if failed
+            return False
+
+    return True
+
 ## Game Loop ##
 running = True
 while running:
@@ -89,17 +125,22 @@ while running:
         ## Timer ##
         if event.type == pg.USEREVENT:
             if in_game == True:
-                print(counter)
                 counter -= 1
-                
                 if counter > 0:
                     timer = str(counter)
                 else:
-                    timer = 'Life lost!'
-                    in_game = False
+                    if fit_check(round) == True:
+                        print("You win!")
+                        timer = "You win!"
+                        in_game = False
+                    else:
+                        print("You lose!")
+                        timer = "You lose!"
+                        in_game = False
+        
+        # Buttons
         if event.type == pg.KEYDOWN:
             if event.key == pg.K_r:
-                print("hey")
                 for i in range(0,7):
                     x, y = starting_coords[i]
                     r = 20
@@ -107,6 +148,7 @@ while running:
             if event.key == pg.K_1:
                 in_game = True
                 counter = 11
+                round += 1
 
 
         ## NO ELONGATED LINES ##
@@ -243,12 +285,34 @@ while running:
     ## Drawing
     screen.fill((200, 200, 200))
 
+    if in_game == True:
+        # Draw hole
+        for i, circle in enumerate(hole):
+            x, y, r = circle
+            if i == 6:  
+                r += 20
+            pg.draw.circle(screen, (50, 50, 50), (x, y), r)
+
+        # Draw lines between circles
+        for i in range(6):
+            if i < 3:
+                if len(hole) >= 2:
+                    x1, y1, _ = hole[0]
+                    x2, y2, _ = hole[1+i]
+                    pg.draw.line(screen, (50, 50, 50), (x1, y1), (x2, y2), 27)
+            else:
+                if len(hole) >= 2:
+                    x1, y1, _ = hole[3]
+                    x2, y2, _ = hole[1+i]
+                    pg.draw.line(screen, (50, 50, 50), (x1, y1), (x2, y2), 27)
+
+
     # Draw circles
     for i, circle in enumerate(circles):
         x, y, r = circle
         if i == 6:
             r = 40
-        pg.draw.circle(screen, (250, 250, 250), (x, y), r, 3)
+        #pg.draw.circle(screen, (250, 250, 250), (x, y), r, 3)
         pg.draw.circle(screen, (100, 100, 100), (x, y), r-10)
 
     # Draw lines between circles
