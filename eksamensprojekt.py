@@ -32,8 +32,8 @@ optionsbutton_height = screen_height*0.9-optionsbutton_y
 
 ## Timer ##
 clock = pg.time.Clock()
-counter = 9
-text = str(counter)
+counter = 0
+timer = str(counter)
 pg.time.set_timer(pg.USEREVENT, 1000)
 a = 75
 font = pg.font.Font(None, a)
@@ -93,9 +93,10 @@ while running:
                 counter -= 1
                 
                 if counter > 0:
-                    text = str(counter)
+                    timer = str(counter)
                 else:
-                    text = 'Life lost!'
+                    timer = 'Life lost!'
+                    in_game = False
         if event.type == pg.KEYDOWN:
             if event.key == pg.K_r:
                 print("hey")
@@ -103,6 +104,9 @@ while running:
                     x, y = starting_coords[i]
                     r = 20
                     circles[i] = (x, y, r)  
+            if event.key == pg.K_1:
+                in_game = True
+                counter = 11
 
 
         ## NO ELONGATED LINES ##
@@ -264,8 +268,8 @@ while running:
     pg.draw.rect(screen,(100, 100, 100),pg.Rect(0,0,(screen_width*0.2),(screen_height)))
     pg.draw.rect(screen,(100, 100, 100),pg.Rect((screen_width*0.8),0,(screen_width),(screen_height)))
 
-
-    text_surface = font.render(text, True, (0, 0, 0))
+    
+    text_surface = font.render(timer, True, (0, 0, 0))
     text_rect = text_surface.get_rect(center=((screen_width*0.9), (screen_height*0.2)))
     screen.blit(text_surface, text_rect)
 
