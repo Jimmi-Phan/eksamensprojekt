@@ -9,7 +9,7 @@ screen = pg.display.set_mode((0, 0), pg.FULLSCREEN)
 screen_width, screen_height = pg.display.get_window_size()
 line_distance = 150
 
-round = 0
+round = -1
 
 lives = 3
 
@@ -18,6 +18,10 @@ hole_size = 50
 in_game = False
 
 joints = 7 # number o balls
+
+difficulty = 15+1 # seconds on timer
+
+color_of_balls = (150, 150, 150)
 
 ## Varibales ##
 # startbutton
@@ -58,33 +62,44 @@ starting_coords = [
     ((screen_width/2)+line_distance, (screen_height/2)), #5
     ((screen_width/2), (screen_height/2)-(line_distance/3)), #6
 ]
-hole = []
+
+wall0 = [
+    ((774.7477443719829),(331.58715814869277)),
+    ((724.4382021787388),(472.89869329110854)),
+    ((922.2153104006234),(304.14053778135826)),
+    ((660.4992124067737),(234.39007514825192)),
+    ((529.62641016866),(307.6861162033018)),
+    ((810.4423641550283),(230.26075997501687)),
+    ((645.9790930575341),(186.54484409975726)),
+]
 wall1 = [
-    ((screen_width/2), (screen_height/2)+line_distance), #0
-    ((screen_width/2-(math.sqrt(2)*(line_distance/2))), (screen_height/2)+line_distance+(math.sqrt(2)*(line_distance/2))), #1
-    ((screen_width/2+(math.sqrt(2)*(line_distance/2))), (screen_height/2)+line_distance+(math.sqrt(2)*(line_distance/2))), #2
-    ((screen_width/2), (screen_height/2)), #3
-    ((screen_width/2)-line_distance, (screen_height/2)), #4
-    ((screen_width/2)+line_distance, (screen_height/2)), #5
-    ((screen_width/2), (screen_height/2)-(line_distance/3)), #6
-    
+    ((773.5929651042786),(589.1044698960656)),
+    ((659.0394152099661),(685.941881089319)),
+    ((897.4044877285276),(673.784496262766)),
+    ((759.3392188437377),(439.7832365849918)),
+    ((644.8272223445854),(342.8966912973302)),
+    ((889.4354906296937),(365.1175813786342)),
+    ((765.3592917251119),(390.1469723973745)),
 ]
 wall2 = [
-    ((837.2784314449324),(417.51233922933034)),
-    ((758.9585450351976),(545.4419893999075)),
-    ((834.7553009724339),(567.4911171034641)),
-    ((874.5130519074469),(563.0955237886234)),
-    ((877.1669495533383),(413.3902394591122)),
-    ((835.8532822494316),(708.7714178360451)),
-    ((895.1434729881971),(518.7372134800536)),
+    ((760.3357916939409),(458.72918455145873)),
+    ((854.9401418203221),(342.3246445318999)),
+    ((667.285932429556),(341.0783295147095)),
+    ((753.2363942932399),(608.5610855490331)),
+    ((895.1884518675437),(657.0338959732444)),
+    ((616.6941748644622),(670.6595743669064)),
+    ((751.5546537281051),(658.5327950322155)),
 ]
+
+hole = []
+walls = [wall0, wall1, wall2]
 
 for i in range(joints):
     x1, y2,  = starting_coords[i]
     r = 20
     circles.append((x1, y2, r))
 
-    x2, y2 = wall1[i]
+    x2, y2 = walls[round+1][i]
     r = 20
     hole.append((x2, y2, r))
 
@@ -107,12 +122,19 @@ def fit_check(round):
     win_check = 0
     for i in range(joints):
         x1, y1, r = circles[i]
-        x2, y2 = wall1[i]
+        x2, y2 = walls[round][i]
         distance = math.sqrt((x2 - x1)**2 + (y2 - y1)**2)
 
-        if distance + r > hole_size - 10: # if failed
+        if distance + r > hole_size: # if failed
             return False
     return True
+
+def make_hole():
+    hole.clear()
+    for i in range(joints):
+        x2, y2 = walls[round][i]
+        r = 20
+        hole.append((x2, y2, r))
 
 def get_coords():
     coords = []
@@ -142,13 +164,12 @@ while running:
                     timer = str(counter)
                 else:
                     if fit_check(round) == True:
-                        print("You win!")
                         timer = "You win!"
                         in_game = False
                     else:
-                        print("You lose!")
                         timer = "You lose!"
                         in_game = False
+                        lives -= 1
         
         # Buttons
         if event.type == pg.KEYDOWN:
@@ -157,10 +178,11 @@ while running:
                     x, y = starting_coords[i]
                     r = 20
                     circles[i] = (x, y, r)
-            if event.key == pg.K_1:
-                in_game = True
-                counter = 21
+            if event.key == pg.K_1 and in_game == False:
                 round += 1
+                make_hole()
+                in_game = True
+                counter = difficulty
             if event.key == pg.K_3:
                 get_coords()
 
@@ -172,10 +194,10 @@ while running:
                     x, y, r = circle
                     if (event.pos[0] - x) ** 2 + (event.pos[1] - y) ** 2 <= r ** 2:
                         active_circle = num
-                if pg.mouse.get_pos()[0] < startbutton_x + startbutton_width and pg.mouse.get_pos()[0] > startbutton_x and pg.mouse.get_pos()[1] < startbutton_y + startbutton_height and pg.mouse.get_pos()[1] > startbutton_y:
-                    in_game = True
-                    counter = 21
-                    round += 1
+                # if pg.mouse.get_pos()[0] < startbutton_x + startbutton_width and pg.mouse.get_pos()[0] > startbutton_x and pg.mouse.get_pos()[1] < startbutton_y + startbutton_height and pg.mouse.get_pos()[1] > startbutton_y:
+                #     in_game = True
+                #     counter = difficulty
+                #     round += 1
         if event.type == pg.MOUSEBUTTONUP:
             if event.button == 1:
                 active_circle = None
@@ -329,8 +351,8 @@ while running:
         x, y, r = circle
         if i == 6:
             r = 40
-        #pg.draw.circle(screen, (250, 250, 250), (x, y), r, 3)
-        pg.draw.circle(screen, (100, 100, 100), (x, y), r-10)
+        pg.draw.circle(screen, (250, 250, 250), (x, y), r, 3)
+        pg.draw.circle(screen, color_of_balls, (x, y), r-10)
 
     # Draw lines between circles
     for i in range(6):
@@ -338,34 +360,58 @@ while running:
             if len(circles) >= 2:
                 x1, y1, _ = circles[0]
                 x2, y2, _ = circles[1+i]
-                pg.draw.line(screen, (100, 100, 100), (x1, y1), (x2, y2), 17)
+                pg.draw.line(screen, color_of_balls, (x1, y1), (x2, y2), 17)
         else:
             if len(circles) >= 2:
                 x1, y1, _ = circles[3]
                 x2, y2, _ = circles[1+i]
-                pg.draw.line(screen, (100, 100, 100), (x1, y1), (x2, y2), 17)
+                pg.draw.line(screen, color_of_balls, (x1, y1), (x2, y2), 17)
     
 
     pg.draw.rect(screen,(100, 100, 100),pg.Rect(0,0,(screen_width*0.2),(screen_height)))
     pg.draw.rect(screen,(100, 100, 100),pg.Rect((screen_width*0.8),0,(screen_width),(screen_height)))
 
-    
+    ## Draw text
+
+    # timer
+    text_surface = font.render("Countdown", True, (0, 0, 0))
+    text_rect = text_surface.get_rect(center=((screen_width*0.9), (screen_height*0.175)))
+    screen.blit(text_surface, text_rect)
     text_surface = font.render(timer, True, (0, 0, 0))
-    text_rect = text_surface.get_rect(center=((screen_width*0.9), (screen_height*0.2)))
+    text_rect = text_surface.get_rect(center=((screen_width*0.9), (screen_height*0.25)))
     screen.blit(text_surface, text_rect)
 
-    text_surface = font.render("test", True, (0, 0, 0))
-    text_rect = text_surface.get_rect(center=((screen_width*0.9), (screen_height*0.5)))
+    # round
+    text_surface = font.render("Round", True, (0, 0, 0))
+    text_rect = text_surface.get_rect(center=((screen_width*0.9), (screen_height*0.475)))
+    screen.blit(text_surface, text_rect)
+    text_surface = font.render(str(round) if round > -1 else "Not In Game", True, (0, 0, 0))
+    text_rect = text_surface.get_rect(center=((screen_width*0.9), (screen_height*0.55)))
     screen.blit(text_surface, text_rect)
 
+    # lives
+    text_surface = font.render("Lives", True, (0, 0, 0))
+    text_rect = text_surface.get_rect(center=((screen_width*0.9), (screen_height*0.75)))
+    screen.blit(text_surface, text_rect)
+    text_surface = font.render(str(lives), True, (0, 0, 0))
+    text_rect = text_surface.get_rect(center=((screen_width*0.9), (screen_height*0.825)))
+    screen.blit(text_surface, text_rect)
+
+    ## Draw buttons
+
+    # startbutton
     pg.draw.rect(screen,(50,50,50),pg.Rect(startbutton_x, startbutton_y,startbutton_width,startbutton_height))
     text_surface = font.render("Start", True, (0, 0, 0))
     text_rect = text_surface.get_rect(center=(startbutton_x+startbutton_width/2, startbutton_y+startbutton_height/2))
     screen.blit(text_surface, text_rect)
+
+    # nextbutton
     pg.draw.rect(screen,(50,50,50),pg.Rect(nextbutton_x, nextbutton_y,nextbutton_width,nextbutton_height))
     text_surface = font.render("Next", True, (0, 0, 0))
     text_rect = text_surface.get_rect(center=(nextbutton_x+nextbutton_width/2, nextbutton_y+nextbutton_height/2))
     screen.blit(text_surface, text_rect)
+
+    # optionsbutton
     pg.draw.rect(screen,(50,50,50),pg.Rect(optionsbutton_x, optionsbutton_y,optionsbutton_width,optionsbutton_height))
     text_surface = font.render("Options", True, (0, 0, 0))
     text_rect = text_surface.get_rect(center=(optionsbutton_x+optionsbutton_width/2, optionsbutton_y+optionsbutton_height/2))
