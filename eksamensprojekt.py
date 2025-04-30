@@ -17,6 +17,8 @@ hole_size = 50
 
 in_game = False
 
+joints = 7 # number o balls
+
 ## Varibales ##
 # startbutton
 startbutton_x = screen_width*0.0175
@@ -49,33 +51,35 @@ active_circle = None
 circles = []
 starting_coords = [
     ((screen_width/2), (screen_height/2)+line_distance), #0
-    ((screen_width/2-106.07), (screen_height/2)+line_distance+106.07), #1
-    ((screen_width/2+106.07), (screen_height/2)+line_distance+106.07), #2
+    ((screen_width/2-(math.sqrt(2)*(line_distance/2))), (screen_height/2)+line_distance+(math.sqrt(2)*(line_distance/2))), #1
+    ((screen_width/2+(math.sqrt(2)*(line_distance/2))), (screen_height/2)+line_distance+(math.sqrt(2)*(line_distance/2))), #2
     ((screen_width/2), (screen_height/2)), #3
     ((screen_width/2)-line_distance, (screen_height/2)), #4
     ((screen_width/2)+line_distance, (screen_height/2)), #5
     ((screen_width/2), (screen_height/2)-(line_distance/3)), #6
-    #((screen_width/2), (screen_height/2)-line_distance), #7
-    #((screen_width/2), (screen_height/2)-line_distance), #8
-    #((screen_width/2), (screen_height/2)-line_distance), #9
-    #((screen_width/2), (screen_height/2)-line_distance) #10
 ]
 hole = []
 wall1 = [
     ((screen_width/2), (screen_height/2)+line_distance), #0
-    ((screen_width/2-106.07), (screen_height/2)+line_distance+106.07), #1
-    ((screen_width/2+106.07), (screen_height/2)+line_distance+106.07), #2
+    ((screen_width/2-(math.sqrt(2)*(line_distance/2))), (screen_height/2)+line_distance+(math.sqrt(2)*(line_distance/2))), #1
+    ((screen_width/2+(math.sqrt(2)*(line_distance/2))), (screen_height/2)+line_distance+(math.sqrt(2)*(line_distance/2))), #2
     ((screen_width/2), (screen_height/2)), #3
     ((screen_width/2)-line_distance, (screen_height/2)), #4
     ((screen_width/2)+line_distance, (screen_height/2)), #5
     ((screen_width/2), (screen_height/2)-(line_distance/3)), #6
-    #((screen_width/2), (screen_height/2)-line_distance), #7
-    #((screen_width/2), (screen_height/2)-line_distance), #8
-    #((screen_width/2), (screen_height/2)-line_distance), #9
-    #((screen_width/2), (screen_height/2)-line_distance) #10
+    
+]
+wall2 = [
+    ((837.2784314449324),(417.51233922933034)),
+    ((758.9585450351976),(545.4419893999075)),
+    ((834.7553009724339),(567.4911171034641)),
+    ((874.5130519074469),(563.0955237886234)),
+    ((877.1669495533383),(413.3902394591122)),
+    ((835.8532822494316),(708.7714178360451)),
+    ((895.1434729881971),(518.7372134800536)),
 ]
 
-for i in range(7): # number o balls
+for i in range(joints):
     x1, y2,  = starting_coords[i]
     r = 20
     circles.append((x1, y2, r))
@@ -101,15 +105,23 @@ def no_elongate(circle_number, i):
 
 def fit_check(round):
     win_check = 0
-    for i in range(7):
+    for i in range(joints):
         x1, y1, r = circles[i]
         x2, y2 = wall1[i]
         distance = math.sqrt((x2 - x1)**2 + (y2 - y1)**2)
 
-        if distance + r > hole_size: # if failed
+        if distance + r > hole_size - 10: # if failed
             return False
-
     return True
+
+def get_coords():
+    coords = []
+    for i in range(joints):
+        x, y, r = circles[i]
+        coords.append((x, y))
+
+        print(f"(({x}),({y})),")
+    return coords
 
 ## Game Loop ##
 running = True
@@ -144,12 +156,13 @@ while running:
                 for i in range(0,7):
                     x, y = starting_coords[i]
                     r = 20
-                    circles[i] = (x, y, r)  
+                    circles[i] = (x, y, r)
             if event.key == pg.K_1:
                 in_game = True
-                counter = 11
+                counter = 21
                 round += 1
-
+            if event.key == pg.K_3:
+                get_coords()
 
         ## NO ELONGATED LINES ##
         # mouse leftclick check
@@ -159,6 +172,10 @@ while running:
                     x, y, r = circle
                     if (event.pos[0] - x) ** 2 + (event.pos[1] - y) ** 2 <= r ** 2:
                         active_circle = num
+                if pg.mouse.get_pos()[0] < startbutton_x + startbutton_width and pg.mouse.get_pos()[0] > startbutton_x and pg.mouse.get_pos()[1] < startbutton_y + startbutton_height and pg.mouse.get_pos()[1] > startbutton_y:
+                    in_game = True
+                    counter = 21
+                    round += 1
         if event.type == pg.MOUSEBUTTONUP:
             if event.button == 1:
                 active_circle = None
@@ -241,9 +258,9 @@ while running:
                                         no_elongate(0, i)
     
     ## Collision prevention
-    temp_range1, temp_range2, temp_range3 = (0, 7,1)
+    temp_range1, temp_range2, temp_range3 = (0, 6,1)
     if active_circle in (2,5):
-        temp_range1, temp_range2, temp_range3 = (6, -1, -1)
+        temp_range1, temp_range2, temp_range3 = (5, -1, -1)
     for i in range(temp_range1, temp_range2, temp_range3):
         for j in range(temp_range1, temp_range2, temp_range3):
             if i != j:
