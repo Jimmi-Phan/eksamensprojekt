@@ -19,7 +19,7 @@ in_game = False
 
 joints = 7 # number o balls
 
-difficulty = 15+1 # seconds on timer
+difficulty = 5+1 # seconds on timer
 
 color_of_balls = (150, 150, 150)
 
@@ -90,9 +90,28 @@ wall2 = [
     ((616.6941748644622),(670.6595743669064)),
     ((751.5546537281051),(658.5327950322155)),
 ]
+wall3 = [
+    ((764.9494441947463),(492.02061953616396)),
+    ((696.9194219031632),(625.706505354401)),
+    ((791.5449469953475),(639.6440568040423)),
+    ((914.6313874406542),(482.2576350473509)),
+    ((982.8905716770288),(615.8266575315507)),
+    ((891.1438684721795),(630.4073446410775)),
+    ((943.0440122537987),(441.114923041122)),
+]
+wall4 = [
+    ((792.1768165867378),(520.7069693407759)),
+    ((642.6067899776128),(509.3576460065132)),
+    ((941.2368709810551),(537.4730119258095)),
+    ((817.7849835376626),(372.9090607445662)),
+    ((667.8106458619778),(370.1345267765489)),
+    ((967.771343233223),(374.9319065800129)),
+    ((823.9344360754294),(323.2886593608032)),
+]
 
 hole = []
-walls = [wall0, wall1, wall2]
+walls = [wall0, wall1, wall2, wall3, wall4]
+random.shuffle(walls)
 
 for i in range(joints):
     x1, y2,  = starting_coords[i]
@@ -174,17 +193,19 @@ while running:
         # Buttons
         if event.type == pg.KEYDOWN:
             if event.key == pg.K_r:
-                for i in range(0,7):
+                for i in range(joints):
                     x, y = starting_coords[i]
                     r = 20
                     circles[i] = (x, y, r)
-            if event.key == pg.K_1 and in_game == False:
-                round += 1
-                make_hole()
-                in_game = True
-                counter = difficulty
             if event.key == pg.K_3:
                 get_coords()
+            # dev tool
+            keys = pg.key.get_pressed()
+            if keys[pg.K_j] and keys[pg.K_i] and keys[pg.K_m]:
+                for i in range(joints):
+                    x, y = walls[round][i]
+                    r = 20
+                    circles[i] = (x, y, r)
 
         ## NO ELONGATED LINES ##
         # mouse leftclick check
@@ -194,10 +215,11 @@ while running:
                     x, y, r = circle
                     if (event.pos[0] - x) ** 2 + (event.pos[1] - y) ** 2 <= r ** 2:
                         active_circle = num
-                # if pg.mouse.get_pos()[0] < startbutton_x + startbutton_width and pg.mouse.get_pos()[0] > startbutton_x and pg.mouse.get_pos()[1] < startbutton_y + startbutton_height and pg.mouse.get_pos()[1] > startbutton_y:
-                #     in_game = True
-                #     counter = difficulty
-                #     round += 1
+                if pg.mouse.get_pos()[0] < startbutton_x + startbutton_width and pg.mouse.get_pos()[0] > startbutton_x and pg.mouse.get_pos()[1] < startbutton_y + startbutton_height and pg.mouse.get_pos()[1] > startbutton_y and in_game == False:
+                    round += 1
+                    make_hole()
+                    in_game = True
+                    counter = difficulty
         if event.type == pg.MOUSEBUTTONUP:
             if event.button == 1:
                 active_circle = None
@@ -377,7 +399,7 @@ while running:
     text_surface = font.render("Countdown", True, (0, 0, 0))
     text_rect = text_surface.get_rect(center=((screen_width*0.9), (screen_height*0.175)))
     screen.blit(text_surface, text_rect)
-    text_surface = font.render(timer, True, (0, 0, 0))
+    text_surface = font.render(timer if round > -1 else "Not In Game", True, (0, 0, 0))
     text_rect = text_surface.get_rect(center=((screen_width*0.9), (screen_height*0.25)))
     screen.blit(text_surface, text_rect)
 
@@ -393,7 +415,7 @@ while running:
     text_surface = font.render("Lives", True, (0, 0, 0))
     text_rect = text_surface.get_rect(center=((screen_width*0.9), (screen_height*0.75)))
     screen.blit(text_surface, text_rect)
-    text_surface = font.render(str(lives), True, (0, 0, 0))
+    text_surface = font.render(str(lives) if round > -1 else "Not In Game", True, (0, 0, 0))
     text_rect = text_surface.get_rect(center=((screen_width*0.9), (screen_height*0.825)))
     screen.blit(text_surface, text_rect)
 
