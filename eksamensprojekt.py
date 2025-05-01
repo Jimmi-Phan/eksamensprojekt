@@ -10,7 +10,7 @@ screen = pg.display.set_mode((0, 0), pg.FULLSCREEN)
 screen_width, screen_height = pg.display.get_window_size()
 line_distance = 150
 
-round = -1
+round = 0
 
 lives = 3
 
@@ -20,7 +20,9 @@ in_game = False
 
 joints = 7 # number o balls
 
-difficulty = 5+1 # seconds on timer
+difficulty = 0
+sec_on_time = 10+1
+fit_check_size = 10
 
 color_of_balls = (150, 150, 150)
 
@@ -66,8 +68,9 @@ starting_coords = [
 
 
 hole = []
-walls = [walls.wall0, walls.wall1, walls.wall2, walls.wall3, walls.wall4]
+walls = [walls.wall0, walls.wall1, walls.wall2, walls.wall3, walls.wall4, walls.wall5]
 random.shuffle(walls)
+walls.insert(0, starting_coords)
 
 for i in range(joints):
     x1, y2,  = starting_coords[i]
@@ -93,6 +96,24 @@ def no_elongate(circle_number, i):
     y2 = y1 + math.sin(angle) * distance1
     circles[i] = (x2, y2, r2)
 
+def change_difficulty():
+    global difficulty
+    global sec_on_time
+    global fit_check_size
+    difficulty += 1
+    if difficulty > 3:
+        difficulty = 1
+    if difficulty == 1:
+        sec_on_time = 20+1 # seconds on timer
+        fit_check_size = 0
+    elif difficulty == 2:
+        sec_on_time = 15+1
+        fit_check_size = 5
+    elif difficulty == 3:
+        sec_on_time = 10+1
+        fit_check_size = 10
+change_difficulty()
+
 def fit_check(round):
     win_check = 0
     for i in range(joints):
@@ -100,7 +121,7 @@ def fit_check(round):
         x2, y2 = walls[round][i]
         distance = math.sqrt((x2 - x1)**2 + (y2 - y1)**2)
 
-        if distance + r > hole_size: # if failed
+        if distance + r > hole_size - fit_check_size: # if failed
             return False
     return True
 
@@ -175,7 +196,14 @@ while running:
                     round += 1
                     make_hole()
                     in_game = True
-                    counter = difficulty
+                    counter = sec_on_time
+                # if pg.mouse.get_pos()[0] < nextbutton_x + nextbutton_width and pg.mouse.get_pos()[0] > nextbutton_x and pg.mouse.get_pos()[1] < nextbutton_y + nextbutton_height and pg.mouse.get_pos()[1] > nextbutton_y and in_game == False:
+                #     round += 1
+                #     make_hole()
+                #     in_game = True
+                #     counter = sec_on_time
+                if pg.mouse.get_pos()[0] < optionsbutton_x + optionsbutton_width and pg.mouse.get_pos()[0] > optionsbutton_x and pg.mouse.get_pos()[1] < optionsbutton_y + optionsbutton_height and pg.mouse.get_pos()[1] > optionsbutton_y and in_game == False:
+                    change_difficulty()
         if event.type == pg.MOUSEBUTTONUP:
             if event.button == 1:
                 active_circle = None
@@ -302,7 +330,7 @@ while running:
     ## Drawing
     screen.fill((200, 200, 200))
 
-    if in_game == True:
+    if in_game == True or round > 0:
         # Draw hole
         for i, circle in enumerate(hole):
             x, y, r = circle
@@ -355,7 +383,7 @@ while running:
     text_surface = font.render("Countdown", True, (0, 0, 0))
     text_rect = text_surface.get_rect(center=((screen_width*0.9), (screen_height*0.175)))
     screen.blit(text_surface, text_rect)
-    text_surface = font.render(timer if round > -1 else "Not In Game", True, (0, 0, 0))
+    text_surface = font.render(timer, True, (0, 0, 0))
     text_rect = text_surface.get_rect(center=((screen_width*0.9), (screen_height*0.25)))
     screen.blit(text_surface, text_rect)
 
@@ -363,15 +391,15 @@ while running:
     text_surface = font.render("Round", True, (0, 0, 0))
     text_rect = text_surface.get_rect(center=((screen_width*0.9), (screen_height*0.475)))
     screen.blit(text_surface, text_rect)
-    text_surface = font.render(str(round) if round > -1 else "Not In Game", True, (0, 0, 0))
+    text_surface = font.render(str(round), True, (0, 0, 0))
     text_rect = text_surface.get_rect(center=((screen_width*0.9), (screen_height*0.55)))
     screen.blit(text_surface, text_rect)
 
     # lives
-    text_surface = font.render("Lives", True, (0, 0, 0))
+    text_surface = font.render("Lives" if round > 0 else "Difficulty", True, (0, 0, 0))
     text_rect = text_surface.get_rect(center=((screen_width*0.9), (screen_height*0.75)))
     screen.blit(text_surface, text_rect)
-    text_surface = font.render(str(lives) if round > -1 else "Not In Game", True, (0, 0, 0))
+    text_surface = font.render(str(lives) if round > 0 else str(difficulty), True, (0, 0, 0))
     text_rect = text_surface.get_rect(center=((screen_width*0.9), (screen_height*0.825)))
     screen.blit(text_surface, text_rect)
 
@@ -385,7 +413,7 @@ while running:
 
     # nextbutton
     pg.draw.rect(screen,(50,50,50),pg.Rect(nextbutton_x, nextbutton_y,nextbutton_width,nextbutton_height))
-    text_surface = font.render("Next", True, (0, 0, 0))
+    text_surface = font.render("test", True, (0, 0, 0))
     text_rect = text_surface.get_rect(center=(nextbutton_x+nextbutton_width/2, nextbutton_y+nextbutton_height/2))
     screen.blit(text_surface, text_rect)
 
