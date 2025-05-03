@@ -68,16 +68,20 @@ starting_coords = [
 
 
 hole = []
-walls = [walls.wall0, walls.wall1, walls.wall2, walls.wall3, walls.wall4, walls.wall5]
-random.shuffle(walls)
-walls.insert(0, starting_coords)
+wall_list = []
+for i in dir(walls):
+    if isinstance(getattr(walls, i), list) and len(getattr(walls, i)) == joints:
+        wall_list.append(getattr(walls, i))  # Append the list to wall_list
+
+random.shuffle(wall_list)
+wall_list.insert(0, starting_coords)
 
 for i in range(joints):
     x1, y2,  = starting_coords[i]
     r = 20
     circles.append((x1, y2, r))
 
-    x2, y2 = walls[round+1][i]
+    x2, y2 = wall_list[round+1][i]
     r = 20
     hole.append((x2, y2, r))
 
@@ -100,25 +104,26 @@ def change_difficulty():
     global difficulty
     global sec_on_time
     global fit_check_size
-    difficulty += 1
-    if difficulty > 3:
-        difficulty = 1
-    if difficulty == 1:
-        sec_on_time = 20+1 # seconds on timer
-        fit_check_size = 0
-    elif difficulty == 2:
-        sec_on_time = 15+1
-        fit_check_size = 5
-    elif difficulty == 3:
-        sec_on_time = 10+1
-        fit_check_size = 10
+    if round == 0:
+        difficulty += 1
+        if difficulty > 3:
+            difficulty = 1
+        if difficulty == 1:     
+            sec_on_time = 20+1 # seconds on timer
+            fit_check_size = 0
+        elif difficulty == 2:
+            sec_on_time = 15+1
+            fit_check_size = 5
+        elif difficulty == 3:
+            sec_on_time = 10+1
+            fit_check_size = 10
 change_difficulty()
 
 def fit_check(round):
     win_check = 0
     for i in range(joints):
         x1, y1, r = circles[i]
-        x2, y2 = walls[round][i]
+        x2, y2 = wall_list[round][i]
         distance = math.sqrt((x2 - x1)**2 + (y2 - y1)**2)
 
         if distance + r > hole_size - fit_check_size: # if failed
@@ -128,7 +133,7 @@ def fit_check(round):
 def make_hole():
     hole.clear()
     for i in range(joints):
-        x2, y2 = walls[round][i]
+        x2, y2 = wall_list[round][i]
         r = 20
         hole.append((x2, y2, r))
 
@@ -180,7 +185,7 @@ while running:
             keys = pg.key.get_pressed()
             if keys[pg.K_j] and keys[pg.K_i] and keys[pg.K_m]:
                 for i in range(joints):
-                    x, y = walls[round][i]
+                    x, y = wall_list[round][i]
                     r = 20
                     circles[i] = (x, y, r)
 
@@ -311,7 +316,7 @@ while running:
     x3, y3, r3 = circles[6]
     angle = math.atan2(y2 - y1, x2 - x1) + 1.5707963267948966
     angle2 = math.atan2(y3 - y2, x3 - x2) + 1.5707963267948966
-    # if (abs(angle-angle2)) > 0.75: ctrl + '
+    # if (abs(angle-angle2)) > 1: #ctrl + '
     #     if angle > angle2:
     #         overlap = 0.6
     #         x3 += math.cos(angle2) * overlap
@@ -407,7 +412,7 @@ while running:
 
     # startbutton
     pg.draw.rect(screen,(50,50,50),pg.Rect(startbutton_x, startbutton_y,startbutton_width,startbutton_height))
-    text_surface = font.render("Start", True, (0, 0, 0))
+    text_surface = font.render("Start" if round == 0 else "Next", True, (0, 0, 0))
     text_rect = text_surface.get_rect(center=(startbutton_x+startbutton_width/2, startbutton_y+startbutton_height/2))
     screen.blit(text_surface, text_rect)
 
