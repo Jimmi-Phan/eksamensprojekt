@@ -12,11 +12,13 @@ line_distance = 150
 
 round = 0
 
-lives = 3
+score = 0
 
 hole_size = 50
 
 in_game = False
+
+post_game = False
 
 joints = 7 # number o balls
 
@@ -76,6 +78,8 @@ for i in dir(walls):
 random.shuffle(wall_list)
 wall_list.insert(0, starting_coords)
 
+max_rounds = len(wall_list) - 1
+
 for i in range(joints):
     x1, y2,  = starting_coords[i]
     r = 20
@@ -108,7 +112,7 @@ def change_difficulty():
         difficulty += 1
         if difficulty > 3:
             difficulty = 1
-        if difficulty == 1:     
+        if difficulty == 1:
             sec_on_time = 20+1 # seconds on timer
             fit_check_size = 0
         elif difficulty == 2:
@@ -166,11 +170,12 @@ while running:
                 else:
                     if fit_check(round) == True:
                         timer = "You win!"
+                        score += 1
                         in_game = False
                     else:
                         timer = "You lose!"
                         in_game = False
-                        lives -= 1
+                        
         
         # Buttons
         if event.type == pg.KEYDOWN:
@@ -198,10 +203,15 @@ while running:
                     if (event.pos[0] - x) ** 2 + (event.pos[1] - y) ** 2 <= r ** 2:
                         active_circle = num
                 if pg.mouse.get_pos()[0] < startbutton_x + startbutton_width and pg.mouse.get_pos()[0] > startbutton_x and pg.mouse.get_pos()[1] < startbutton_y + startbutton_height and pg.mouse.get_pos()[1] > startbutton_y and in_game == False:
-                    round += 1
-                    make_hole()
-                    in_game = True
-                    counter = sec_on_time
+                    if round >= max_rounds:
+                        post_game = True
+                        round = 0
+                    else:
+                        round += 1
+                        make_hole()
+                        in_game = True
+                        counter = sec_on_time
+                        post_game = False
                 # if pg.mouse.get_pos()[0] < nextbutton_x + nextbutton_width and pg.mouse.get_pos()[0] > nextbutton_x and pg.mouse.get_pos()[1] < nextbutton_y + nextbutton_height and pg.mouse.get_pos()[1] > nextbutton_y and in_game == False:
                 #     round += 1
                 #     make_hole()
@@ -396,16 +406,24 @@ while running:
     text_surface = font.render("Round", True, (0, 0, 0))
     text_rect = text_surface.get_rect(center=((screen_width*0.9), (screen_height*0.475)))
     screen.blit(text_surface, text_rect)
-    text_surface = font.render(str(round), True, (0, 0, 0))
+    text_surface = font.render(f"{round}/{max_rounds}", True, (0, 0, 0))
     text_rect = text_surface.get_rect(center=((screen_width*0.9), (screen_height*0.55)))
     screen.blit(text_surface, text_rect)
 
-    # lives
-    text_surface = font.render("Lives" if round > 0 else "Difficulty", True, (0, 0, 0))
+    # score
+    text_surface = font.render("Score" if round > 0 else "Difficulty", True, (0, 0, 0))
     text_rect = text_surface.get_rect(center=((screen_width*0.9), (screen_height*0.75)))
     screen.blit(text_surface, text_rect)
-    text_surface = font.render(str(lives) if round > 0 else str(difficulty), True, (0, 0, 0))
+    text_surface = font.render(str(score) if round > 0 else str(difficulty), True, (0, 0, 0))
     text_rect = text_surface.get_rect(center=((screen_width*0.9), (screen_height*0.825)))
+    screen.blit(text_surface, text_rect)
+
+    # results
+    text_surface = font.render("Results" if post_game == True else "", True, (0, 0, 0))
+    text_rect = text_surface.get_rect(center=((screen_width*0.7), (screen_height*0.1)))
+    screen.blit(text_surface, text_rect)
+    text_surface = font.render(f"{score}/{max_rounds}" if post_game == True else "", True, (0, 0, 0))
+    text_rect = text_surface.get_rect(center=((screen_width*0.7), (screen_height*0.2)))
     screen.blit(text_surface, text_rect)
 
     ## Draw buttons
