@@ -11,10 +11,13 @@ Start og Brug
   - Klik "Start" for at starte spillet.
   - Klik "Reset" for at genstarte tandstikfiguren position.
   - Klik "Options" for at skifte sværhedgrad.
-4. Tryk ESC for at afslutte programmet.
+  - Tryk på tasten "3" for at få koordinaterne af tandstikfiguren.
+  - Tryk på tasten "j" og "i" og "m" (på samme tid) for at placere tandstikfiguren på hullets koordinater.
+  
+4. Tryk på tasten "ESC" for at afslutte programmet.
 
 Test med PyTest
-For at sikre, at programmets kernefunktioner fungerer korrekt, bruges pytest til automatiserede tests. 
+For at sikre, at programmets kernefunktioner fungerer korrekt, bruges PyTest til automatiserede tests. 
 For at testene skal følende Python-pakker være installeret:
   - PyTest (hvilket kan installeres med denne kommand: pip install pytest)
 
