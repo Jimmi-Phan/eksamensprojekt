@@ -8,27 +8,28 @@ pg.init()
 screen = pg.display.set_mode((0, 0), pg.FULLSCREEN)
 
 screen_width, screen_height = pg.display.get_window_size()
+
+## Varibales ##
+
+# stickguy
 line_distance = 150
-
-round = 0
-
-score = 0
-
+joints = 7 # number o balls
+color_of_balls = (75, 75, 75)
+color_of_hole = (175, 175, 175)
 hole_size = 50
 
+
+# game logic
 in_game = False
-
 post_game = False
+score = 0
+round = 0
 
-joints = 7 # number o balls
-
+# game difficulty
 difficulty = 0
 sec_on_time = 10+1
 fit_check_size = 10
 
-color_of_balls = (150, 150, 150)
-
-## Varibales ##
 # startbutton
 startbutton_x = screen_width*0.0175
 startbutton_y = screen_height*0.1
@@ -55,7 +56,7 @@ pg.time.set_timer(pg.USEREVENT, 1000)
 a = 75
 font = pg.font.Font(None, a)
 
-## Circles ##
+## lists ##
 active_circle = None
 circles = []
 starting_coords = [
@@ -67,8 +68,7 @@ starting_coords = [
     ((screen_width/2)+line_distance, (screen_height/2)), #5
     ((screen_width/2), (screen_height/2)-(line_distance/3)), #6
 ]
-
-
+# Walls
 hole = []
 wall_list = []
 for i in dir(walls):
@@ -124,7 +124,6 @@ def change_difficulty():
 change_difficulty()
 
 def fit_check(round):
-    win_check = 0
     for i in range(joints):
         x1, y1, r = circles[i]
         x2, y2 = wall_list[round][i]
@@ -153,7 +152,6 @@ def get_coords():
 ## Game Loop ##
 running = True
 while running:
-
     events = pg.event.get()
     for event in events:
         if event.type == pg.QUIT:
@@ -176,7 +174,6 @@ while running:
                         timer = "You lose!"
                         in_game = False
                         
-        
         # Buttons
         if event.type == pg.KEYDOWN:
             if event.key == pg.K_r:
@@ -212,11 +209,11 @@ while running:
                         in_game = True
                         counter = sec_on_time
                         post_game = False
-                # if pg.mouse.get_pos()[0] < nextbutton_x + nextbutton_width and pg.mouse.get_pos()[0] > nextbutton_x and pg.mouse.get_pos()[1] < nextbutton_y + nextbutton_height and pg.mouse.get_pos()[1] > nextbutton_y and in_game == False:
-                #     round += 1
-                #     make_hole()
-                #     in_game = True
-                #     counter = sec_on_time
+                if pg.mouse.get_pos()[0] < nextbutton_x + nextbutton_width and pg.mouse.get_pos()[0] > nextbutton_x and pg.mouse.get_pos()[1] < nextbutton_y + nextbutton_height and pg.mouse.get_pos()[1] > nextbutton_y and in_game == False:
+                    for i in range(joints):
+                        x, y = starting_coords[i]
+                        r = 20
+                        circles[i] = (x, y, r)
                 if pg.mouse.get_pos()[0] < optionsbutton_x + optionsbutton_width and pg.mouse.get_pos()[0] > optionsbutton_x and pg.mouse.get_pos()[1] < optionsbutton_y + optionsbutton_height and pg.mouse.get_pos()[1] > optionsbutton_y and in_game == False:
                     change_difficulty()
         if event.type == pg.MOUSEBUTTONUP:
@@ -300,7 +297,7 @@ while running:
                                     for i in range(1,4):
                                         no_elongate(0, i)
     
-    ## Collision prevention
+    ## Collision prevention ##
     temp_range1, temp_range2, temp_range3 = (0, 6,1)
     if active_circle in (2,5):
         temp_range1, temp_range2, temp_range3 = (5, -1, -1)
@@ -340,10 +337,8 @@ while running:
             
     #         circles[6] = (x3, y3, r3)
 
-
-
-    ## Drawing
-    screen.fill((200, 200, 200))
+    ## Drawing ##
+    screen.fill((150,150,150))
 
     if in_game == True or round > 0:
         # Draw hole
@@ -351,7 +346,7 @@ while running:
             x, y, r = circle
             if i == 6:  
                 r += 20
-            pg.draw.circle(screen, (50, 50, 50), (x, y), r)
+            pg.draw.circle(screen, color_of_hole, (x, y), r)
 
         # Draw lines between circles
         for i in range(6):
@@ -359,20 +354,19 @@ while running:
                 if len(hole) >= 2:
                     x1, y1, _ = hole[0]
                     x2, y2, _ = hole[1+i]
-                    pg.draw.line(screen, (50, 50, 50), (x1, y1), (x2, y2), 27)
+                    pg.draw.line(screen, color_of_hole, (x1, y1), (x2, y2), 27)
             else:
                 if len(hole) >= 2:
                     x1, y1, _ = hole[3]
                     x2, y2, _ = hole[1+i]
-                    pg.draw.line(screen, (50, 50, 50), (x1, y1), (x2, y2), 27)
-
+                    pg.draw.line(screen, color_of_hole, (x1, y1), (x2, y2), 27)
 
     # Draw circles
     for i, circle in enumerate(circles):
         x, y, r = circle
         if i == 6:
             r = 40
-        pg.draw.circle(screen, (250, 250, 250), (x, y), r, 3)
+        pg.draw.circle(screen, (255,255,255), (x, y), r, 3)
         pg.draw.circle(screen, color_of_balls, (x, y), r-10)
 
     # Draw lines between circles
@@ -388,7 +382,7 @@ while running:
                 x2, y2, _ = circles[1+i]
                 pg.draw.line(screen, color_of_balls, (x1, y1), (x2, y2), 17)
     
-
+    # borderlines
     pg.draw.rect(screen,(100, 100, 100),pg.Rect(0,0,(screen_width*0.2),(screen_height)))
     pg.draw.rect(screen,(100, 100, 100),pg.Rect((screen_width*0.8),0,(screen_width),(screen_height)))
 
@@ -436,7 +430,7 @@ while running:
 
     # nextbutton
     pg.draw.rect(screen,(50,50,50),pg.Rect(nextbutton_x, nextbutton_y,nextbutton_width,nextbutton_height))
-    text_surface = font.render("test", True, (0, 0, 0))
+    text_surface = font.render("Reset", True, (0, 0, 0))
     text_rect = text_surface.get_rect(center=(nextbutton_x+nextbutton_width/2, nextbutton_y+nextbutton_height/2))
     screen.blit(text_surface, text_rect)
 
